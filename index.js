@@ -190,6 +190,9 @@ var styleMaker = function(subClass, el) {
         case ['f-bold', 'f-normal', 'fw-bold', 'fw-normal'].indexOf(subClass) != -1:
             output = 'font-weight: ' + nth(1);
             break;
+        case subClass.indexOf('text-decoration') == 0:
+            output = 'text-decoration: ' + nth(2);
+            break;
 
         case ['pos-absolute', 'pos-fixed', 'pos-relative', 'pos-static', 'pos-sticky'].indexOf(subClass) != -1:
             output = 'position: ' + nth(1);
