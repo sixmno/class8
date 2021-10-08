@@ -157,6 +157,9 @@ var styleMaker = function(subClass, el) {
         //     }
         //     output + width + ' ' + style + ' ' + color;
             break;
+        case subClass.indexOf('resize-') == 0:
+            output = 'resize: ' + nth(1);
+            break;
 
         case subClass.indexOf('br-') == 0:
             output = 'border-radius: ' + subClass.substr(3).replace(/_/g, ' ');
