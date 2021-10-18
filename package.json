@@ -1,6 +1,6 @@
 {
   "name": "class8",
-  "version": "0.0.8",
+  "version": "0.1.8",
   "description": "dynamic style generator",
   "main": "dist/index-min.js",
   "scripts": {
