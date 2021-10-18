@@ -1,7 +1,7 @@
 {
   "name": "class8",
   "version": "0.1.8",
-  "description": "dynamic style generator",
+  "description": "Dynamic style generator. No more CSS writing. Only Classes.",
   "main": "dist/index-min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
