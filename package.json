@@ -2,7 +2,7 @@
   "name": "class8",
   "version": "0.0.8",
   "description": "dynamic style generator",
-  "main": "index.js",
+  "main": "dist/index-min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -22,5 +22,9 @@
   "bugs": {
     "url": "https://github.com/sixmno/class8/issues"
   },
-  "homepage": "https://github.com/sixmno/class8#readme"
+  "homepage": "https://github.com/sixmno/class8#readme",
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-minify": "^3.1.0"
+  }
 }
