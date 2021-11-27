@@ -121,7 +121,7 @@ var styleMaker = function(subClass, el) {
                     output = 'border-' + subClass.substr(7,5) + ': ' + nth(2);
                 }
             } else if (subClass.nth_occurrence('-', 3) != -1) {
-                output = 'border-' + trbl(subClass.substr(7,1)) + '-' + subClass.substr(9,5) + ': ' + nth(3);
+                output = 'border-' + trbl(subClass.substr(7,1)) + '-' + subClass.split('-')[2] + ': ' + subClass.split('-')[3];
             }
 
             //     if (['color', 'width', 'style'].indexOf(cls_arr[2]) > -1) {
@@ -192,6 +192,9 @@ var styleMaker = function(subClass, el) {
             break;
         case subClass.indexOf('text-decoration') == 0:
             output = 'text-decoration: ' + nth(2);
+            break;
+        case subClass.indexOf('text-overflow') == 0:
+            output = 'text-overflow: ' + nth(2);
             break;
 
         case ['pos-absolute', 'pos-fixed', 'pos-relative', 'pos-static', 'pos-sticky'].indexOf(subClass) != -1:
