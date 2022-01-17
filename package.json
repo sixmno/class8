@@ -4,7 +4,8 @@
   "description": "Dynamic style generator. No more CSS writing. Only Classes.",
   "main": "dist/index-min.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run": "gulp"
   },
   "repository": {
     "type": "git",
