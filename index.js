@@ -353,6 +353,9 @@ var styleMaker = function(subClass, el) {
         case subClass.indexOf('will-change-') == 0:
             output = 'will-change: ' + subClass.substr(12);
             break;
+        case subClass.indexOf('filter-') == 0:
+            output = 'filter: ' + nth(1);
+            break;
 
 
 
