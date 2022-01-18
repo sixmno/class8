@@ -615,6 +615,8 @@ const class8 = {
     // It takes the global Vue object as well as user-defined options.
     install(Vue, options) {
 
+        if(class8.installed) return;
+
         // Options for the observer (which mutations to observe)
         const config = { attributes: true, childList: true, subtree: true };
 
@@ -669,17 +671,22 @@ const class8 = {
         observer.observe(document.body, config);
 
         // We call Vue.mixin() here to inject functionality into all components.
-        Vue.mixin({
-            // Anything added to a mixin will be injected into all components.
-            // In this case, the mounted() method runs when the component is added to the DOM.
-            mounted() {
-                // console.log('Mounted!');
-            }
-        });
+        if(Vue)
+            Vue.mixin({
+                // Anything added to a mixin will be injected into all components.
+                // In this case, the mounted() method runs when the component is added to the DOM.
+                mounted() {
+                    // console.log('Mounted!');
+                }
+            });
 
         if (window) setupResponsive(window)
 
+        class8.installed = true;
+
     },
+
+    installed: false,
 
     log: false
 };
@@ -707,15 +714,16 @@ String.prototype.nth_occurrence = function(char, nth) {
 if(typeof module !== 'undefined')
     module.exports = class8;
 
-if(typeof window !== 'undefined' && !window.class8){
-    window.class8 = class8;
-}
 // Automatic installation if Vue has been added to the global scope.
 if (typeof window !== 'undefined' && window.Vue) {
     window.Vue.use(class8)
 }
 
-
+if(typeof window !== 'undefined' && !window.class8){
+    window.class8 = class8;
+    if(!class8.installed)
+        class8.install();
+}
 
 
 
