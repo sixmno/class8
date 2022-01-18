@@ -1,11 +1,11 @@
 {
   "name": "class8",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "description": "Dynamic style generator. No more CSS writing. Only Classes.",
   "main": "dist/index-min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "run": "gulp"
+    "serve": "gulp"
   },
   "repository": {
     "type": "git",

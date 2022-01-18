@@ -704,7 +704,8 @@ String.prototype.nth_occurrence = function(char, nth) {
     }
 }
 
-exports.class8 = class8
+if(typeof module !== 'undefined')
+    module.exports = class8;
 
 if(typeof window !== 'undefined' && !window.class8){
     window.class8 = class8;
