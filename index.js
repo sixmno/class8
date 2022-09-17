@@ -9,7 +9,7 @@ var trbl = function(x) {
 
 var styleMaker = function(subClass, el) {
 
-    if(class8.log){
+    if(class8.log === 1){
         // if(subClass.indexOf('cont-') != -1)
         console.log('styleMaking for: ', subClass);
     }
@@ -170,7 +170,7 @@ var styleMaker = function(subClass, el) {
             break;
 
         case subClass.indexOf('bg-pos-') == 0:
-            output = 'background-position: ' + subClass.substr(7);
+                output = 'background-position: ' + subClass.substr(7).replace(/___/g, ' ');
             break;
         case subClass.indexOf('bg-size-') == 0:
             output = 'background-size: ' + subClass.substr(8);
@@ -445,36 +445,43 @@ var addStyleByClass = function(cls, el) {
     var level = 0;
 
     (cls_props || []).forEach(function(prop) {
-        if(class8.log)
-            console.log('prop: ', prop);
+        if(!prop) return
+        if(class8.log === 1)
+            console.group(prop);
         // return
 
         if (/l\d+/.test(prop)) {
-            // console.log('type 1');
+            if(class8.log === 1) console.log('type 1');
             level = prop.substr(1);
         } else if (/_\{.+\}/.test(prop)) {
-            // console.log('type 2');
+            if(class8.log === 1) console.log('type 2');
             parent_cls += prop.slice(2, -1);
         } else if (/\{.+\}_/.test(prop)) {
-            // console.log('type 3');
+            if(class8.log === 1) console.log('type 3');
             child_cls += prop.slice(1, -2);
         } else {
-            // console.log('type 4');
+            if(class8.log === 1) console.log('type 4');
             output += styleMaker(prop, el);
         }
+
+        if(class8.log === 1) console.groupEnd(prop);
     });
 
-    if(class8.log)
-        console.log('output: ', output);
+    if(class8.log === 1)
+        console.log('style output: ', output);
 
     if(output.indexOf('calc(') != -1){
         var calc = output.match(/calc\(([^)]+)\)/);
         if(calc.length)
             output = output.replace(calc[1], calc[1].replace('-', ' - ').replace('+', ' + '))
     }
+
+    
     // return
 
     if (output.trim().length > 0) {
+
+        // if(class8.log === 2) console.log(output,parent_cls,child_cls, _cls );
 
         $target = document.querySelector('style.class8-' + level);
 
@@ -487,7 +494,7 @@ var addStyleByClass = function(cls, el) {
             $target = document.querySelector('style.class8-' + level);
         }
 
-        // console.log(_cls, cls);
+        if(class8.log === 2) console.log('_cls, cls', _cls, cls);
 
         if (parent_cls.length > 0 || child_cls.length > 0 || _cls.indexOf('(') != -1) {
             // console.log(_cls);
@@ -508,13 +515,13 @@ var addStyleByClass = function(cls, el) {
                 .replace(/%/g, '\\%');
         }
 
-        // console.log(parent_cls, cls, child_cls);
+        if(class8.log === 2) console.log('parent_cls, cls, child_cls ', parent_cls, cls, child_cls);
 
         parent_cls.split(',').forEach(function(p) {
             child_cls.split(',').forEach(function(ch) {
                 var style_line = p + cls + ch + '{\n' + output + '\n}\n';
                 $target.append(style_line)
-                // console.log(_cls+'\n\n', style_line);
+                if(class8.log === 2) console.log('$target.append(style_line): ',_cls+'\n\n', style_line);
             });
         });
 
@@ -524,11 +531,12 @@ var addStyleByClass = function(cls, el) {
         });
         paraArr.forEach(function(p) {
             head.appendChild(p);
+            if(class8.log === 2) console.log('appending', p);
         });
 
-
-        // console.log(_cls, style_line, ' class inserted!');
     }
+
+    if(class8.log === 1) console.info('new push:', _cls)
 
     cssClass.push(_cls);
     
@@ -642,15 +650,15 @@ const class8 = {
                     .match(/(((\{([^}]+)\}_)|(_\{([^}]+)\})):)*(!|\b([^ ])+)+/g) || [])
                 // el.classList
                 .forEach(cls => {
-                    if(class8.log)
-                        console.log('cls1: ', cls, el); //, el.attributes['class'].value);
+                    // if(class8.log)
+                    //     console.log('cls1: ', cls, el); //, el.attributes['class'].value);
                     cls = cls.trim();
                     if (cls.length == 0) return;
                     if (cssClass.indexOf(cls) === -1) {
                         cssClass.push(cls);
                         // if(cls.indexOf('top-.7') != -1)
-                        if(class8.log)
-                            console.log('cls2: ', cls, el); //, el.attributes['class'].value);
+                        // if(class8.log)
+                        //     console.log('cls2: ', cls, el); //, el.attributes['class'].value);
                         // console.log(cssClass);
                         // return;
                         addStyleByClass(cls, el);

@@ -1,6 +1,6 @@
 {
   "name": "class8",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Dynamic style generator. No more CSS writing. Only Classes.",
   "main": "dist/index-min.js",
   "scripts": {
