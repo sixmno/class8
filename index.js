@@ -755,7 +755,6 @@ if(typeof window !== 'undefined' && !window.class8){
 
 
 
-
 // // Options for the observer (which mutations to observe)
 // const config = { attributes: true, childList: true, subtree: true };
 
