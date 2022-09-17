@@ -165,12 +165,19 @@ var styleMaker = function(subClass, el) {
             output = 'border-radius: ' + subClass.substr(3).replace(/_/g, ' ');
             break;
 
-        case subClass.indexOf('bg-') == 0:
-            output = 'background-color: ' + subClass.substr(3);
+        case subClass.indexOf('bg-img-') == 0:
+            output = 'background-image: url("' + subClass.substr(7) + '")';
             break;
 
-        case subClass.indexOf('bg-img') == 0:
-            output = 'background-image: url("' + nth(2) + '")';
+        case subClass.indexOf('bg-pos-') == 0:
+            output = 'background-position: ' + subClass.substr(7);
+            break;
+        case subClass.indexOf('bg-size-') == 0:
+            output = 'background-size: ' + subClass.substr(8);
+            break;
+
+        case subClass.indexOf('bg-') == 0:
+            output = 'background-color: ' + subClass.substr(3);
             break;
 
         case subClass.indexOf('color-') == 0:
@@ -187,7 +194,7 @@ var styleMaker = function(subClass, el) {
             output = 'float: ' + nth(1);
             break;
 
-        case ['f-bold', 'f-normal', 'fw-bold', 'fw-normal'].indexOf(subClass) != -1:
+        case subClass.indexOf('fw-') == 0:
             output = 'font-weight: ' + nth(1);
             break;
         case subClass.indexOf('text-decoration') == 0:
@@ -427,7 +434,7 @@ var addStyleByClass = function(cls, el) {
     var child_cls = '';
     // OLD! var cls_props = cls.match(/_\(([^)]+)\)|\(([^)]+)\)_|(l\d+)|(((!|#|)(|\w+)(|-)[^(:|/b)]){2,})/g)
     // var cls_props = cls.match(/_\{([^}]+)\}|\{([^}]+)\}_|(l\d+)|(((!|#|)(|\w+)(|-)[^(:|/b)]){2,})/g)
-    var cls_props = cls.match(/(((\{([^}]+)\}_)|(_\{([^}]+)\})))|(!|\b(\w|-|#|%|,|\.|\(([^)]*)\))+)+/g)
+    var cls_props = cls.match(/(((\{([^}]+)\}_)|(_\{([^}]+)\})))|(!|\b(\w|-|#|%|,|\.|\/|\(([^)]*)\))+)+/g)
     // var cls_props = cls.split(':')
 
     // console.log(cls, ' ==> ' ,cls_props);
@@ -491,6 +498,7 @@ var addStyleByClass = function(cls, el) {
                 // .replace(/\\/g, '\\\\')
                 .replace(/#/g, '\\#')
                 .replace(/:/g, '\\:')
+                .replace(/\//g, '\\/')
                 .replace(/\./g, '\\.')
                 .replace(/\(/g, '\\(')
                 .replace(/\)/g, '\\)')
