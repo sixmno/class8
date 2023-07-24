@@ -7,9 +7,9 @@ var trbl = function(x) {
     ];
 }
 
-var styleMaker = function(subClass, el) {
+var styleMaker = function(subClass) {
 
-    if(class8.log === 1){
+    if(class8.log >= 1){
         // if(subClass.indexOf('cont-') != -1)
         console.log('styleMaking for: ', subClass);
     }
@@ -24,7 +24,7 @@ var styleMaker = function(subClass, el) {
         return subClass.substr(subClass.nth_occurrence('-', n)+1).replace(/_/g, ' ')
     }
 
-    var color, width, style, output;
+    var output;
 
     // var cls_arr = subClass.split('-');
 
@@ -176,6 +176,9 @@ var styleMaker = function(subClass, el) {
             output = 'background-size: ' + subClass.substr(8);
             break;
 
+        case subClass.indexOf('bgl-') == 0:
+            output = 'background-image: linear-gradient(' + nth(1) + ')';
+            break;
         case subClass.indexOf('bg-') == 0:
             output = 'background-color: ' + subClass.substr(3);
             break;
@@ -197,9 +200,11 @@ var styleMaker = function(subClass, el) {
         case subClass.indexOf('fw-') == 0:
             output = 'font-weight: ' + nth(1);
             break;
+            
         case subClass.indexOf('text-decoration') == 0:
             output = 'text-decoration: ' + nth(2);
             break;
+
         case subClass.indexOf('text-overflow') == 0:
             output = 'text-overflow: ' + nth(2);
             break;
@@ -249,6 +254,7 @@ var styleMaker = function(subClass, el) {
             output = 'padding-top: ' + nth(1) + (important ? ' !important' : '');
             output += '; padding-bottom: ' + nth(1);
             break;
+            
         case subClass.indexOf('m-') == 0:
             output = 'margin: ' + nth(1);
             break;
@@ -280,6 +286,7 @@ var styleMaker = function(subClass, el) {
         case subClass.indexOf('dir-') == 0 && ['rtl', 'ltr', 'auto', 'revert', 'unset'].indexOf(nth(1)) != -1:
             output = 'direction: ' + nth(1);
             break;
+
         case subClass.indexOf('ws-') == 0:
             output = 'white-space: ' + nth(1);
             break;
@@ -287,9 +294,11 @@ var styleMaker = function(subClass, el) {
         case subClass.indexOf('lh-') == 0:
             output = 'line-height: ' + nth(1);
             break;
+
         case subClass.indexOf('overflow-x-') == 0:
             output = 'overflow-x: ' + nth(2);
             break;
+
         case subClass.indexOf('overflow-y-') == 0:
             output = 'overflow-y: ' + nth(2);
             break;
@@ -297,32 +306,31 @@ var styleMaker = function(subClass, el) {
         case subClass.indexOf('overflow-') == 0:
             output = 'overflow: ' + nth(1);
             break;
+
         case subClass.indexOf('content-') == 0:
-            output = 'content: "' + nth(1) + '"';
+            output = 'content: ' + (nth(1)==''?'""':nth(1)) + '';
             break;
 
-        case subClass.indexOf('shadow-') == 0:
-
-            output = 'box-shadow: ' + nth(1);
-            break;
         case subClass.indexOf('tshadow-') == 0:
-
             output = 'text-shadow: ' + nth(1);
             break;
 
-        case subClass.indexOf('tr-') == 0:
+        case subClass.indexOf('shadow-') == 0:
+            output = 'box-shadow: ' + nth(1);
+            break;
 
+        case subClass.indexOf('tr-') == 0:
             output = 'transition: ' + nth(1);
             break;
             
         case subClass.indexOf('trf-origin-') == 0:
             output = 'transform-origin: ' + nth(2);
-            
             break;
             
         case subClass.indexOf('trf-') == 0:
             output = 'transform: ' + nth(1);
             break;
+
         case subClass.indexOf('perspective-') == 0:
             output = 'perspective: ' + nth(1);
             break;
@@ -332,6 +340,12 @@ var styleMaker = function(subClass, el) {
             break;
         case subClass.indexOf('ani-du-') == 0:
             output = 'animation-duration: ' + nth(2);
+            break;
+        case subClass.indexOf('ani-infinite') == 0:
+            output = '-webkit-animation-iteration-count:infinite;animation-iteration-count:infinite';
+            break;
+        case subClass.indexOf('ani-') == 0:
+            output = '-webkit-animation-duration:1s;animation-duration:1s;-webkit-animation-fill-mode:both;animation-fill-mode:both';
             break;
 
         case subClass.indexOf('gtc-') == 0:
@@ -360,6 +374,7 @@ var styleMaker = function(subClass, el) {
         case subClass.indexOf('will-change-') == 0:
             output = 'will-change: ' + subClass.substr(12);
             break;
+
         case subClass.indexOf('filter-') == 0:
             output = 'filter: ' + nth(1);
             break;
@@ -405,7 +420,7 @@ var styleMaker = function(subClass, el) {
         case subClass.indexOf('translate-x') == 0:
                 output = 'transform: translateX('+nth(2)+')'
             break;
-            case subClass.indexOf('translate-y') == 0:
+        case subClass.indexOf('translate-y') == 0:
                 output = 'transform: translateY('+nth(2)+')'
             break;
 
@@ -428,7 +443,7 @@ var addStyleByClass = function(cls, el) {
     // console.log(cls);
     // return
 
-    var _this = this;
+    // var _this = this;
     var _cls = cls.toString();
     var parent_cls = '';
     var child_cls = '';
@@ -446,28 +461,28 @@ var addStyleByClass = function(cls, el) {
 
     (cls_props || []).forEach(function(prop) {
         if(!prop) return
-        if(class8.log === 1)
+        if(class8.log >= 1)
             console.group(prop);
         // return
 
         if (/l\d+/.test(prop)) {
-            if(class8.log === 1) console.log('type 1');
+            if(class8.log >= 1) console.log('type 1');
             level = prop.substr(1);
         } else if (/_\{.+\}/.test(prop)) {
-            if(class8.log === 1) console.log('type 2');
+            if(class8.log >= 1) console.log('type 2');
             parent_cls += prop.slice(2, -1);
         } else if (/\{.+\}_/.test(prop)) {
-            if(class8.log === 1) console.log('type 3');
+            if(class8.log >= 1) console.log('type 3');
             child_cls += prop.slice(1, -2);
         } else {
-            if(class8.log === 1) console.log('type 4');
+            if(class8.log >= 1) console.log('type 4');
             output += styleMaker(prop, el);
         }
 
-        if(class8.log === 1) console.groupEnd(prop);
+        if(class8.log >= 1) console.groupEnd(prop);
     });
 
-    if(class8.log === 1)
+    if(class8.log >= 1)
         console.log('style output: ', output);
 
     if(output.indexOf('calc(') != -1){
@@ -481,7 +496,7 @@ var addStyleByClass = function(cls, el) {
 
     if (output.trim().length > 0) {
 
-        // if(class8.log === 2) console.log(output,parent_cls,child_cls, _cls );
+        // if(class8.log >= 2) console.log(output,parent_cls,child_cls, _cls );
 
         $target = document.querySelector('style.class8-' + level);
 
@@ -494,9 +509,9 @@ var addStyleByClass = function(cls, el) {
             $target = document.querySelector('style.class8-' + level);
         }
 
-        if(class8.log === 2) console.log('_cls, cls', _cls, cls);
+        if(class8.log >= 2) console.log('_cls, cls', _cls, cls);
 
-        if (parent_cls.length > 0 || child_cls.length > 0 || _cls.indexOf('(') != -1) {
+        if (parent_cls.length > 0 || child_cls.length > 0 /*|| _cls.indexOf('(') != -1*/) {
             // console.log(_cls);
             cls = '[class*="' + _cls + '"]';
         } else {
@@ -507,21 +522,31 @@ var addStyleByClass = function(cls, el) {
                 .replace(/:/g, '\\:')
                 .replace(/\//g, '\\/')
                 .replace(/\./g, '\\.')
+                .replace(/,/g, '\\,')
                 .replace(/\(/g, '\\(')
                 .replace(/\)/g, '\\)')
                 .replace(/\{/g, '\\{')
                 .replace(/\}/g, '\\}')
                 .replace(/!/g, '\\!')
                 .replace(/%/g, '\\%');
+
+
+            // var chr_arr = ['#', ':', '/', '.', ',', '(', ')', '{', '}', '!', '%']
+            // for (let index = 0; index < chr_arr.length; index++) {
+            //     const chr = chr_arr[index];
+            //     cls = cls.replace(new RegExp(chr,'g'), '\\'+chr)
+            // }
         }
 
-        if(class8.log === 2) console.log('parent_cls, cls, child_cls ', parent_cls, cls, child_cls);
+        if(class8.log >= 2) console.log('parent_cls,  >>', parent_cls);
+        if(class8.log >= 2) console.log('cls >> ', cls);
+        if(class8.log >= 2) console.log('child_cls >>', child_cls);
 
         parent_cls.split(',').forEach(function(p) {
             child_cls.split(',').forEach(function(ch) {
                 var style_line = p + cls + ch + '{\n' + output + '\n}\n';
                 $target.append(style_line)
-                if(class8.log === 2) console.log('$target.append(style_line): ',_cls+'\n\n', style_line);
+                if(class8.log >= 2) console.log('$target.append(style_line): ',_cls+'\n\n', style_line);
             });
         });
 
@@ -531,12 +556,12 @@ var addStyleByClass = function(cls, el) {
         });
         paraArr.forEach(function(p) {
             head.appendChild(p);
-            if(class8.log === 2) console.log('appending', p);
+            if(class8.log >= 2) console.log('appending', p);
         });
 
     }
 
-    if(class8.log === 1) console.info('new push:', _cls)
+    if(class8.log >= 1) console.info('new push:', _cls)
 
     cssClass.push(_cls);
     
@@ -545,74 +570,83 @@ var addStyleByClass = function(cls, el) {
 
 var setupResponsive = function(window) {
 
-
     /* Smartphones (portrait) ----------- */
-    var phone = window.matchMedia('only screen and (min-width : 320px) and (max-width : 480px)');
-    var do_phone = function(m) {
+    var browser = window.matchMedia('only screen and (max-width : 900px)');
+    var browser_fn = function(m) {
         if (m.matches) {
-            document.body.setAttribute('phone', 'portrait')
-        } else if (document.body.getAttribute('phone') == 'portrait') {
-            document.body.removeAttribute('phone')
+            if(document.body.hasAttribute('desktop')){
+                document.body.removeAttribute('desktop')
+            }
+            if(!document.body.hasAttribute('phone')){
+                document.body.setAttribute('phone', '')
+            }
+        } else {
+            if(document.body.hasAttribute('phone')){
+                document.body.removeAttribute('phone')
+            }
+            if(!document.body.hasAttribute('desktop')){
+                document.body.setAttribute('desktop', '')
+            }
         }
     }
-    phone.addListener(do_phone);
-    do_phone(phone)
+    browser.addListener(browser_fn);
+    browser_fn(browser)
 
     /* Smartphones (landscape) ----------- */
-    var phone_landscape = window.matchMedia('only screen and (min-width: 481px) and (max-width: 767px)');
-    var do_phone_landscape = function(m) {
-        if (m.matches) {
-            document.body.setAttribute('phone', 'landscape')
-        } else if (document.body.getAttribute('phone') == 'landscape') {
-            document.body.removeAttribute('phone')
-        }
-    }
-    phone_landscape.addListener(do_phone_landscape);
-    do_phone_landscape(phone_landscape)
+    // var phone_landscape = window.matchMedia('only screen and (min-width: 481px) and (max-width: 767px)');
+    // var do_phone_landscape = function(m) {
+    //     if (m.matches) {
+    //         document.body.setAttribute('phone', 'landscape')
+    //     } else if (document.body.getAttribute('phone') == 'landscape') {
+    //         document.body.removeAttribute('phone')
+    //     }
+    // }
+    // phone_landscape.addListener(do_phone_landscape);
+    // do_phone_landscape(phone_landscape)
 
 
 
 
     /* Tablets, Ipads (portrait) ----------- */
-    var tablet = window.matchMedia('only screen and (min-width: 768px) and (max-width: 1024px)');
-    var do_tablet = function(m) {
-        if (m.matches) {
-            document.body.setAttribute('tablet', 'portrait')
-        } else if (document.body.getAttribute('tablet') == 'portrait') {
-            document.body.removeAttribute('tablet')
-        }
-    }
-    tablet.addListener(do_tablet);
-    do_tablet(tablet)
+    // var tablet = window.matchMedia('only screen and (min-width: 768px) and (max-width: 1024px)');
+    // var do_tablet = function(m) {
+    //     if (m.matches) {
+    //         document.body.setAttribute('tablet', 'portrait')
+    //     } else if (document.body.getAttribute('tablet') == 'portrait') {
+    //         document.body.removeAttribute('tablet')
+    //     }
+    // }
+    // tablet.addListener(do_tablet);
+    // do_tablet(tablet)
 
 
     /*  Tablets, Ipads (landscape) ----------- */
-    var tablet_landscape = window.matchMedia('only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: landscape)');
-    var do_tablet_landscape = function(m) {
-        if (m.matches) {
-            document.body.setAttribute('tablet', 'landscape')
-        } else if (document.body.getAttribute('tablet') == 'landscape') {
-            document.body.removeAttribute('tablet')
-        }
-    }
-    tablet_landscape.addListener(do_tablet_landscape);
-    do_tablet_landscape(tablet_landscape)
+    // var tablet_landscape = window.matchMedia('only screen and (min-width: 768px) and (max-width: 1024px) and (orientation: landscape)');
+    // var do_tablet_landscape = function(m) {
+    //     if (m.matches) {
+    //         document.body.setAttribute('tablet', 'landscape')
+    //     } else if (document.body.getAttribute('tablet') == 'landscape') {
+    //         document.body.removeAttribute('tablet')
+    //     }
+    // }
+    // tablet_landscape.addListener(do_tablet_landscape);
+    // do_tablet_landscape(tablet_landscape)
 
 
     /* Desktops and laptops ----------- */
-    var desktop = window.matchMedia('only screen and (min-width : 1024px)');
+    // var desktop = window.matchMedia('only screen and (min-width : 900px)');
 
-    var do_desktop = function(m) {
-        if (m.matches) {
-            document.body.setAttribute('desktop', '')
-            document.body.removeAttribute('no-desktop')
-        } else {
-            document.body.removeAttribute('desktop')
-            document.body.setAttribute('no-desktop', '')
-        }
-    }
-    desktop.addListener(do_desktop);
-    do_desktop(desktop)
+    // var do_desktop = function(m) {
+    //     if (m.matches) {
+    //         document.body.setAttribute('desktop', '')
+    //         // document.body.removeAttribute('no-desktop')
+    //     } else {
+    //         document.body.removeAttribute('desktop')
+    //         // document.body.setAttribute('no-desktop', '')
+    //     }
+    // }
+    // desktop.addListener(do_desktop);
+    // do_desktop(desktop)
 
     /* Large screens ----------- */
     // and (min-width : 1824px)
@@ -625,11 +659,30 @@ var setupResponsive = function(window) {
 
 }
 
+function checkBrowser(){
+    let browser = "";
+    let c = navigator.userAgent.search("Chrome");
+    let f = navigator.userAgent.search("Firefox");
+    let m8 = navigator.userAgent.search("MSIE 8.0");
+    let m9 = navigator.userAgent.search("MSIE 9.0");
+    if (c > -1) {
+        browser = "Chrome";
+    } else if (f > -1) {
+        browser = "Firefox";
+    } else if (m9 > -1) {
+        browser ="MSIE 9.0";
+    } else if (m8 > -1) {
+        browser ="MSIE 8.0";
+    }
+    return browser;
+}
+
 const class8 = {
 
     // The install method is all that needs to exist on the plugin object.
     // It takes the global Vue object as well as user-defined options.
-    install(Vue, options) {
+    install(vue, options) {
+        options = options||{};
 
         if(class8.installed) return;
 
@@ -669,15 +722,15 @@ const class8 = {
 
             return;
             // Use traditional 'for loops' for IE 11
-            for (let mutation of mutationsList) {
-                if (mutation.type === 'childList') {
-                    console.log('A child node has been added or removed.');
-                } else if (mutation.type === 'attributes') {
-                    console.log('The ' + mutation.attributeName + ' attribute was modified.');
-                }
-            }
+            // for (let mutation of mutationsList) {
+            //     if (mutation.type === 'childList') {
+            //         console.log('A child node has been added or removed.');
+            //     } else if (mutation.type === 'attributes') {
+            //         console.log('The ' + mutation.attributeName + ' attribute was modified.');
+            //     }
+            // }
 
-            console.log(mutationsList, observer);
+            // console.log(mutationsList, observer);
         };
 
         // Create an observer instance linked to the callback function
@@ -687,22 +740,29 @@ const class8 = {
         observer.observe(document.body, config);
 
         // We call Vue.mixin() here to inject functionality into all components.
-        if(Vue)
-            Vue.mixin({
-                // Anything added to a mixin will be injected into all components.
-                // In this case, the mounted() method runs when the component is added to the DOM.
-                mounted() {
-                    // console.log('Mounted!');
-                }
-            });
+        // if(Vue)
+        //     Vue.mixin({
+        //         // Anything added to a mixin will be injected into all components.
+        //         // In this case, the mounted() method runs when the component is added to the DOM.
+        //         mounted() {
+        //             // console.log('Mounted!');
+        //         }
+        //     });
 
-        if (window) setupResponsive(window)
+        if (window) {
+            if(options.setupResponsive !== false)
+                setupResponsive(window)
+            const browser = checkBrowser()
+            document.body.setAttribute('browser', browser)
+            class8.browser = browser;
+        }
 
         class8.installed = true;
-
     },
 
     installed: false,
+
+    browser: '',
 
     log: false
 };
@@ -727,13 +787,16 @@ String.prototype.nth_occurrence = function(char, nth) {
     }
 }
 
-if(typeof module !== 'undefined')
-    module.exports = class8;
 
-// Automatic installation if Vue has been added to the global scope.
-if (typeof window !== 'undefined' && window.Vue) {
-    window.Vue.use(class8)
-}
+// export default class8;
+
+// if(typeof module !== 'undefined')
+//     module.exports = class8;
+
+// // Automatic installation if Vue has been added to the global scope.
+// if (typeof window !== 'undefined' && window.Vue) {
+//     window.Vue.use(class8)
+// }
 
 if(typeof window !== 'undefined' && !window.class8){
     window.class8 = class8;
@@ -742,7 +805,7 @@ if(typeof window !== 'undefined' && !window.class8){
 }
 
 
-
+export default class8
 
 
 
