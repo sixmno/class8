@@ -580,6 +580,8 @@ var setupResponsive = function(window) {
             if(!document.body.hasAttribute('phone')){
                 document.body.setAttribute('phone', '')
             }
+            class8.desktop = false;
+            class8.phone = true;
         } else {
             if(document.body.hasAttribute('phone')){
                 document.body.removeAttribute('phone')
@@ -587,6 +589,8 @@ var setupResponsive = function(window) {
             if(!document.body.hasAttribute('desktop')){
                 document.body.setAttribute('desktop', '')
             }
+            class8.desktop = true;
+            class8.phone = false;
         }
     }
     browser.addListener(browser_fn);
@@ -763,6 +767,9 @@ const class8 = {
     installed: false,
 
     browser: '',
+
+    phone: false,
+    desktop: false,
 
     log: false
 };
