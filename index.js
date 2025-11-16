@@ -38,6 +38,9 @@ var styleMaker = function(subClass) {
         case subClass.indexOf('flex-grow-') == 0:
             output = 'flex-grow: ' + subClass.substr(10);
             break;
+        case subClass.indexOf('flex-basis-') == 0:
+            output = 'flex-basis: ' + subClass.substr(11);
+            break;
         case subClass.indexOf('flex-wrap-') == 0:
             output = 'flex-wrap: ' + subClass.substr(10);
             break;
@@ -57,8 +60,8 @@ var styleMaker = function(subClass) {
             output = 'order: ' + subClass.substr(6);
             break;
 
-        case subClass.indexOf('justify-') == 0:
-            output = 'justify-content: ' + subClass.substr(8);
+        case subClass.indexOf('justify-content-') == 0:
+            output = 'justify-content: ' + subClass.substr(16);
             break;
 
         case subClass.indexOf('w-') == 0:
@@ -105,24 +108,26 @@ var styleMaker = function(subClass) {
             //  break;
         case subClass.indexOf('border-') == 0:
 
-            if (subClass.nth_occurrence('-', 2) == -1) {
-                output = 'border: ' + nth(1);                
-            } else if (subClass.nth_occurrence('-', 3) == -1) {
-                if(subClass.nth_occurrence('-', 2) == 8 && ['t', 'r', 'b', 'l'].indexOf(subClass.substr(7,1)) > -1){
-                    output = 'border-' + trbl(subClass.substr(7,1)) + ': ' + nth(2);
-                }else if(subClass.nth_occurrence('-', 2) == 8 && ['x', 'y'].indexOf(subClass.substr(7,1)) > -1){
-                    if(subClass.substr(7,1)=='x'){
+            // if (!['t', 'r', 'b', 'l', 'x', 'y'].includes(subClass.charAt(7))) {
+            //     output = 'border: ' + nth(1);
+            // } else 
+            if (['t', 'r', 'b', 'l', 'x', 'y'].includes(subClass.charAt(7)) && subClass.charAt(8) == '-') {
+                if(['t', 'r', 'b', 'l'].includes(subClass.charAt(7)))
+                    output = 'border-' + trbl(subClass.charAt(7)) + ': ' + nth(2);
+                else{
+                    if(subClass.charAt(7)=='x'){
                         output = 'border-left: ' + nth(2) + '; border-right: ' + nth(2);
                     }
-                    else if(subClass.substr(7,1)=='y'){
+                    else if(subClass.charAt(7)=='y'){
                         output = 'border-top: ' + nth(2) + '; border-bottom: ' + nth(2);
                     }
-                }else if (['color', 'width', 'style'].indexOf(subClass.substr(7,5)) != -1) {
-                    output = 'border-' + subClass.substr(7,5) + ': ' + nth(2);
                 }
-            } else if (subClass.nth_occurrence('-', 3) != -1) {
-                output = 'border-' + trbl(subClass.substr(7,1)) + '-' + subClass.split('-')[2] + ': ' + subClass.split('-')[3];
-            }
+            } else if (['color', 'width', 'style'].indexOf(subClass.substr(7,5)) != -1) {
+                output = 'border-' + subClass.substr(7,5) + ': ' + nth(2);
+            // } else if (subClass.nth_occurrence('-', 3) != -1) {
+            //     output = 'border-' + trbl(subClass.charAt(7)) + '-' + subClass.split('-')[2] + ': ' + subClass.split('-')[3];
+            }else
+                output = 'border: ' + nth(1);
 
             //     if (['color', 'width', 'style'].indexOf(cls_arr[2]) > -1) {
             //         output = 'border-' + trbl(cls_arr[1]) + '-' + cls_arr[2] + ': ' + cls_arr[3];
@@ -142,6 +147,8 @@ var styleMaker = function(subClass) {
             //     output = 'border: ' + subClass.substr(7).replace(/-/g, ' ').replace(/_/g, ' ');
             // }
             // output + width + ' ' + style + ' ' + color;
+            // console.log(subClass , '   >>>   ' , output);
+            
             break;
         case subClass.indexOf('outline-') == 0:
             output = 'outline: ' + nth(1);   
@@ -162,7 +169,7 @@ var styleMaker = function(subClass) {
             break;
 
         case subClass.indexOf('br-') == 0:
-            output = 'border-radius: ' + subClass.substr(3).replace(/_/g, ' ');
+            output = 'border-radius: ' + nth(1);
             break;
 
         case subClass.indexOf('bg-img-') == 0:
@@ -170,10 +177,13 @@ var styleMaker = function(subClass) {
             break;
 
         case subClass.indexOf('bg-pos-') == 0:
-                output = 'background-position: ' + subClass.substr(7).replace(/___/g, ' ');
+                output = 'background-position: ' + nth(2);
             break;
         case subClass.indexOf('bg-size-') == 0:
-            output = 'background-size: ' + subClass.substr(8);
+            output = 'background-size: ' + nth(2);
+            break;
+        case subClass.indexOf('bg-repeat-') == 0:
+            output = 'background-repeat: ' + nth(2);
             break;
 
         case subClass.indexOf('bgl-') == 0:
@@ -187,9 +197,22 @@ var styleMaker = function(subClass) {
             output = 'color: ' + subClass.substr(6);
             break;
 
-        case ['text-left', 'text-right', 'text-center', 'text-justify'].indexOf(subClass) != -1:
+        case subClass.indexOf('fill-') == 0:
+            output = 'fill: ' + subClass.substr(5);
+            break;
+
+        // TEXT-
+        case subClass.indexOf('text-decoration') == 0:
+            output = 'text-decoration: ' + nth(2);
+            break;
+        case subClass.indexOf('text-overflow') == 0:
+            output = 'text-overflow: ' + nth(2);
+            break;
+        case ['text-left', 'text-right', 'text-center', 'text-justify', 'text-start', 'text-end'].indexOf(subClass) != -1:
             output = 'text-align: ' + nth(1);
             break;
+
+
         case ['align-left', 'align-right', 'align-center', 'align-justify'].indexOf(subClass) != -1:
             output = 'text-align: ' + nth(1);
             break;
@@ -201,14 +224,6 @@ var styleMaker = function(subClass) {
             output = 'font-weight: ' + nth(1);
             break;
             
-        case subClass.indexOf('text-decoration') == 0:
-            output = 'text-decoration: ' + nth(2);
-            break;
-
-        case subClass.indexOf('text-overflow') == 0:
-            output = 'text-overflow: ' + nth(2);
-            break;
-
         case ['pos-absolute', 'pos-fixed', 'pos-relative', 'pos-static', 'pos-sticky'].indexOf(subClass) != -1:
             output = 'position: ' + nth(1);
             break;
@@ -355,6 +370,10 @@ var styleMaker = function(subClass) {
             output = 'grid-template-rows: ' + subClass.substr(4).replace(/_/g, ' ');
             break;
 
+        case subClass.indexOf('gc-') == 0:
+            output = 'grid-column: ' + nth(1);
+            break;
+            
         case subClass.indexOf('gcs-') == 0:
             output = 'grid-column-start: ' + nth(1);
             break;
@@ -685,16 +704,26 @@ const class8 = {
 
     // The install method is all that needs to exist on the plugin object.
     // It takes the global Vue object as well as user-defined options.
-    install(vue, options) {
+    install(app, options) {
         options = options||{};
 
         if(class8.installed) return;
+        
+        if(app){
+            app.directive('class8', {
+                mounted(el, binding) {
+                    el.classList.add(binding.value)
+                }
+            })
+        }
+
+
 
         // Options for the observer (which mutations to observe)
         const config = { attributes: true, childList: true, subtree: true };
 
         // Callback function to execute when mutations are observed
-        const callback = function(mutationsList, observer) {
+        const callback = function(){ //mutationsList, observer) {
 
             document.querySelectorAll('[class]').forEach(el => {
 
@@ -762,6 +791,11 @@ const class8 = {
         }
 
         class8.installed = true;
+        // console.log('class8 installed');
+
+        if(options.callback)
+            options.callback();
+        
     },
 
     installed: false,
@@ -805,11 +839,11 @@ String.prototype.nth_occurrence = function(char, nth) {
 //     window.Vue.use(class8)
 // }
 
-if(typeof window !== 'undefined' && !window.class8){
-    window.class8 = class8;
-    if(!class8.installed)
-        class8.install();
-}
+// if(typeof window !== 'undefined' && !window.class8){
+//     window.class8 = class8;
+//     if(!class8.installed)
+//         class8.install();
+// }
 
 
 export default class8
