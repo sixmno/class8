@@ -1,5 +1,42 @@
 
-var cssClass = [];
+var cssClass = new Set();
+
+const styleBuffer = {};
+let rafScheduled = false;
+
+function flushStyles() {
+    rafScheduled = false;
+
+    for (const level in styleBuffer) {
+        const styleEl = document.querySelector('style.class8-' + level);
+        if (styleEl && styleBuffer[level]) {
+            styleEl.textContent += styleBuffer[level];
+            styleBuffer[level] = '';
+        }
+    }
+
+    if(class8.log >= 5) console.log('flushStyles!');
+}
+
+
+function nthIndex(string, char, nth) { 
+
+    var first_index = string.indexOf(char);
+    var length_up_to_first_index = first_index + 1;
+
+    if (nth == 1) {
+        return first_index;
+    } else {
+        var string_after_first_occurrence = string.slice(length_up_to_first_index);
+        var next_occurrence = nthIndex(string_after_first_occurrence, char, nth - 1);
+
+        if (next_occurrence === -1) {
+            return -1;
+        } else {
+            return length_up_to_first_index + next_occurrence;  
+        }
+    }
+}
 
 var trbl = function(x) {
     return ['top', 'right', 'bottom', 'left'][
@@ -7,7 +44,10 @@ var trbl = function(x) {
     ];
 }
 
+const styleCache = new Map();
+
 var styleMaker = function(subClass) {
+    if (styleCache.has(subClass)) return styleCache.get(subClass)
 
     if(class8.log >= 1){
         // if(subClass.indexOf('cont-') != -1)
@@ -21,7 +61,7 @@ var styleMaker = function(subClass) {
     }
 
     function nth (n) {
-        return subClass.substr(subClass.nth_occurrence('-', n)+1).replace(/_/g, ' ')
+        return subClass.substr(  nthIndex(subClass,'-', n)+1   ).replace(/_/g, ' ')
     }
 
     var output;
@@ -454,8 +494,13 @@ var styleMaker = function(subClass) {
             break;
     }
 
-    if (output != undefined) return '\t' + output + (important ? ' !important' : '') + ';\n';
-    else return '';
+    var css = '';
+
+    if (output != undefined)
+        css = '\t' + output + (important ? ' !important' : '') + ';\n'
+    
+    styleCache.set(subClass, css);
+    return css
 }
 
 var addStyleByClass = function(cls, el) {
@@ -561,19 +606,30 @@ var addStyleByClass = function(cls, el) {
         if(class8.log >= 2) console.log('cls >> ', cls);
         if(class8.log >= 2) console.log('child_cls >>', child_cls);
 
+        if (!styleBuffer[level]) {
+            styleBuffer[level] = '';
+        }
+
         parent_cls.split(',').forEach(function(p) {
             child_cls.split(',').forEach(function(ch) {
                 var style_line = p + cls + ch + '{\n' + output + '\n}\n';
-                $target.append(style_line)
+
+                styleBuffer[level] += style_line;
+
+                if (!rafScheduled) {
+                    rafScheduled = true;
+                    requestAnimationFrame(flushStyles);
+                }
+
                 if(class8.log >= 2) console.log('$target.append(style_line): ',_cls+'\n\n', style_line);
             });
         });
 
         var para = document.querySelectorAll('style[class^="class8-"');
-        var paraArr = [].slice.call(para).sort(function(a, b) {
-            return parseInt(a.attributes.level) > parseInt(b.attributes.level) ? 1 : -1;
-        });
-        paraArr.forEach(function(p) {
+        // var paraArr = [].slice.call(para).sort(function(a, b) {
+        //     return parseInt(a.attributes.level) > parseInt(b.attributes.level) ? 1 : -1;
+        // });
+        para.forEach(function(p) {
             head.appendChild(p);
             if(class8.log >= 2) console.log('appending', p);
         });
@@ -582,7 +638,7 @@ var addStyleByClass = function(cls, el) {
 
     if(class8.log >= 1) console.info('new push:', _cls)
 
-    cssClass.push(_cls);
+    cssClass.add(_cls);
     
 
 };
@@ -702,6 +758,8 @@ function checkBrowser(){
 
 const class8 = {
 
+    ver: '4.3',
+
     // The install method is all that needs to exist on the plugin object.
     // It takes the global Vue object as well as user-defined options.
     install(app, options) {
@@ -717,13 +775,12 @@ const class8 = {
             })
         }
 
-
-
-        // Options for the observer (which mutations to observe)
-        const config = { attributes: true, childList: true, subtree: true };
-
         // Callback function to execute when mutations are observed
         const callback = function(){ //mutationsList, observer) {
+
+            if(!class8.counter && options.callback) options.callback();
+
+            class8.counter++;
 
             document.querySelectorAll('[class]').forEach(el => {
 
@@ -740,8 +797,8 @@ const class8 = {
                     //     console.log('cls1: ', cls, el); //, el.attributes['class'].value);
                     cls = cls.trim();
                     if (cls.length == 0) return;
-                    if (cssClass.indexOf(cls) === -1) {
-                        cssClass.push(cls);
+                    if (!cssClass.has(cls)) {
+                        cssClass.add(cls);
                         // if(cls.indexOf('top-.7') != -1)
                         // if(class8.log)
                         //     console.log('cls2: ', cls, el); //, el.attributes['class'].value);
@@ -770,7 +827,11 @@ const class8 = {
         const observer = new MutationObserver(callback);
 
         // Start observing the target node for configured mutations
-        observer.observe(document.body, config);
+        observer.observe(document.body, {
+            attributes: true,
+            attributeFilter: ['class'],
+            subtree: true
+        });
 
         // We call Vue.mixin() here to inject functionality into all components.
         // if(Vue)
@@ -793,12 +854,11 @@ const class8 = {
         class8.installed = true;
         // console.log('class8 installed');
 
-        if(options.callback)
-            options.callback();
         
     },
 
     installed: false,
+    counter: 0,
 
     browser: '',
 
@@ -808,25 +868,6 @@ const class8 = {
     log: false
 };
 
-
-String.prototype.nth_occurrence = function(char, nth) {
-    var string = this;
-    var first_index = string.indexOf(char);
-    var length_up_to_first_index = first_index + 1;
-
-    if (nth == 1) {
-        return first_index;
-    } else {
-        var string_after_first_occurrence = string.slice(length_up_to_first_index);
-        var next_occurrence = string_after_first_occurrence.nth_occurrence(char, nth - 1);
-
-        if (next_occurrence === -1) {
-            return -1;
-        } else {
-            return length_up_to_first_index + next_occurrence;  
-        }
-    }
-}
 
 
 // export default class8;

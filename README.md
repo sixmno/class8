@@ -1,43 +1,126 @@
-# class8
+# ⚡ Class8
 
-> Dynamic style generator.
+> **Runtime Atomic CSS Engine — No Build Step, No Config, No Limits**
 
-> No more CSS writing. Only Classes.
+Class8 is a **runtime, JIT, utility-first CSS engine** inspired by Tailwind —  
+but built for **dynamic UIs, SPAs, CMSs, and runtime-generated content**.
 
-> Focus on DOM only.
+Unlike build-time frameworks, **Class8 generates CSS on demand by observing class usage at runtime**, making it ideal for modern dynamic applications.
 
+---
 
-## Installation
+## 🚀 Why Class8?
 
-Install package with NPM and add it to your development dependencies:
+| Feature | Class8 | Tailwind |
+|------|------|------|
+| Runtime CSS generation | ✅ | ❌ |
+| No build step | ✅ | ❌ |
+| Dynamic / CMS-friendly | ✅ | ⚠️ |
+| Parent / child selectors | ✅ | ❌ |
+| Attribute-based conditions | ✅ | ❌ |
+| Utility-first | ✅ | ✅ |
+| JIT | ✅ (runtime) | ✅ (build-time) |
 
-`npm i class8`
+---
 
-## Usage
+## ✨ Features
+
+### ⚡ Runtime JIT CSS
+CSS is generated **only when a class is used**.
 
 ```html
-<div class="w-100px h-10vh bg-red fs-2em color-blue border-2px_dashed_green shadow-0_0_1em_rgba(200,100,0,.3) text-center">text</div>
+<div class="w-200px h-100px bg-#222 text-white"></div>
 ```
 
+---
 
-<div style="width: 200px; height: 10vh; background-color: red; color:blue; font-size: 2em; border: 2px dashed green; shadow: 0 0 1em rgba(200,100,0,.3); text-align: center;">text</div>
+### 🧠 Smart Caching
+- Each class is parsed once
+- Generated once
+- Reused everywhere
 
+No duplicate styles.
 
-<p><br><br></p>
+---
 
-### :hover{ .. }
+### 🎯 Utility-First Styling
 
 ```html
-<div class="w-100px h-50px bg-yellow cursor-pointer {:hover}_:bg-blue"></div>
+<div class="flex gap-10px ai-center jc-between p-20px"></div>
 ```
 
-<style>
-    #hvr{width: 100px; height: 50px; background-color: yellow; cursor: pointer; }
-    #hvr:hover{background-color: blue; }
-</style>
-<div id="hvr"></div>
+---
 
-<p><br><br></p>
+### 🔥 Parent / Child & Scoped Selectors
 
+```html
+<div class="_{.card} p-20px {.title}_"></div>
+```
 
-help me to complete documentation
+---
+
+### 🎭 Attribute & Context-Based Styling
+
+```html
+<body phone>
+  <div class="{body[phone]}_ fs-14px _{body[desktop]} fs-18px"></div>
+</body>
+```
+
+---
+
+### 🪄 `!important` Support
+
+```html
+<div class="!w-100px"></div>
+```
+
+---
+
+## 📦 Installation
+
+### CDN
+
+```html
+<script src="class8.js"></script>
+<script>
+  class8.install();
+</script>
+```
+
+### NPM
+
+```bash
+npm install class8
+```
+
+```js
+import class8 from 'class8';
+class8.install();
+```
+
+---
+
+## 🧪 Demo
+
+```html
+<div class="w-300px h-200px bg-linear-gradient(45deg,#ff0,#f00) p-20px">
+  <h2 class="fs-20px mb-10px">Class8</h2>
+  <p class="o-.7">Runtime CSS Engine</p>
+</div>
+```
+
+---
+
+## ⚡ Performance
+
+- Batched DOM writes (`requestAnimationFrame`)
+- Cached style generation
+- Minimal MutationObserver usage
+- Zero layout thrashing
+
+---
+
+## 📜 License
+
+MIT
